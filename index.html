@@ -9,76 +9,48 @@
 </head>
 <body>
 
+    <button onclick="alert('Le JavaScript fonctionne !')" style="position:fixed; top:10px; right:10px; z-index:9999; padding:5px; opacity:0.3;">Test JS</button>
+
     <section id="view-landing" class="view active">
         <div class="hero">
             <h1>ADPLANET <span>SN</span></h1>
-            <p>La première plateforme publicitaire 100% visuelle au Sénégal.</p>
-            <div class="features">
-                <div class="feat">📸 Photos HD</div>
-                <div class="feat">🎥 Vidéos démo</div>
-                <div class="feat">💬 WhatsApp direct</div>
-            </div>
-            <p class="scroll-msg">Défilez pour commencer ↓</p>
-        </div>
-        
-        <div class="landing-footer">
-            <h2>Prêt à vendre ou acheter ?</h2>
-            <button class="btn btn-primary" onclick="showView('view-auth')">Inscription / Connexion</button>
+            <p>Défilez pour découvrir la plateforme</p>
+            <div style="height: 100vh;"></div> <button class="btn btn-primary" onclick="showView('view-auth')">Commencer</button>
         </div>
     </section>
 
     <section id="view-auth" class="view">
         <div class="auth-box">
-            <button class="btn-back" onclick="showView('view-landing')">← Retour</button>
             <h2 id="auth-title">Connexion</h2>
             <input type="email" id="auth-email" placeholder="Email">
             <input type="password" id="auth-pw" placeholder="Mot de passe">
-            <button class="btn btn-primary" id="btn-auth-submit">Continuer</button>
-            <p onclick="toggleAuthMode()" id="auth-toggle-text">Pas de compte ? S'inscrire</p>
+            <button class="btn btn-primary" id="btn-auth-submit">Valider</button>
+            <p onclick="toggleAuthMode()" id="auth-toggle-text" style="cursor:pointer; color:blue; margin-top:10px;">S'inscrire</p>
         </div>
     </section>
 
     <section id="view-home" class="view">
         <nav class="main-nav">
-            <span class="logo">AD<span>PLANET</span></span>
-            <button class="btn-profile" onclick="showView('view-profile')">👤 Mon Profil</button>
+            <span>ADPLANET</span>
+            <button onclick="showView('view-profile')">👤 Profil</button>
         </nav>
         <div class="content">
-            <div id="feed" class="feed-grid">
-                <p class="empty-msg">Aucune publication pour le moment.</p>
-            </div>
+            <h2>Fil d'actualité</h2>
+            <div id="feed"></div>
         </div>
     </section>
 
     <section id="view-profile" class="view">
         <nav class="main-nav">
-            <button class="btn-back" onclick="showView('view-home')">← Retour Accueil</button>
-            <button class="btn-logout" onclick="handleLogout()">Déconnexion</button>
+            <button onclick="showView('view-home')">← Retour</button>
+            <button onclick="handleLogout()">Quitter</button>
         </nav>
         <div class="content">
-            <div class="profile-header">
-                <h2 id="user-display">Mon Espace</h2>
-                <button class="btn btn-primary" onclick="openPublishModal()">+ Publier Photo/Vidéo</button>
-            </div>
-            <div id="my-ads" class="feed-grid">
-                </div>
+            <h2>Mon Espace</h2>
+            <button class="btn btn-primary" onclick="openPublishModal()">+ Publier</button>
+            <div id="my-ads"></div>
         </div>
     </section>
-
-    <div id="modal-publish" class="modal">
-        <div class="modal-content">
-            <h3>Nouvelle Publication</h3>
-            <p class="hint">Sélectionnez une image ou une vidéo</p>
-            <input type="file" id="file-input" accept="image/*,video/*">
-            <input type="text" id="post-title" placeholder="Titre de l'objet">
-            <input type="text" id="post-price" placeholder="Prix (FCFA)">
-            <input type="tel" id="post-phone" placeholder="WhatsApp (77xxxxxxx)">
-            <div class="modal-btns">
-                <button class="btn" onclick="closePublishModal()">Annuler</button>
-                <button class="btn btn-primary" id="btn-upload">Publier</button>
-            </div>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>
