@@ -1,6 +1,6 @@
 // CONFIGURATION SUPABASE
-const SB_URL = "https://hygkieeuiwgyvvqxyjmv.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTIyNDAsImV4cCI6MjA5MzM4ODI0MH0.NNP6q_OmIVfXLt-lIPBNY1HiGdw5gLlI2ZbwdNCMP_Y";
+const SB_URL = "https://hygkieeuiwgyvvqxyjmv.supabase.co/rest/v1/";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTIyNDAsImV4cCI6MjA5MzM4ODI0MH0.NNP6q_OmIVfXLt-lIPBNY1HiGdw5gLlI2ZbwdNCMP_Y";
 const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
 let currentUser = null;
