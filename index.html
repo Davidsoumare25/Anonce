@@ -4,257 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADPLANET SN</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Exo+2:wght@300;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
-            --accent: #0055ff; --dark: #0f172a; --text: #1e293b;
-            --success: #22c55e;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Exo 2', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-        /* Navigation */
-        nav { 
-            position: fixed; top: 0; width: 100%; height: 70px; 
-            background: white; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; z-index: 1000;
-        }
-        .logo { font-family: 'Orbitron'; font-weight: 900; color: var(--dark); text-decoration: none; font-size: 1.2rem; }
-        .logo span { color: var(--accent); }
-
-        /* Main Content */
-        main { margin-top: 80px; padding: 20px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-        
-        .hero { text-align: center; padding: 40px 0; }
-        .hero h1 { font-family: 'Orbitron'; font-size: 2rem; margin-bottom: 10px; }
-
-        /* Grid */
-        .ads-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; margin-top: 30px; 
-        }
-
-        /* Modals - Correction du bug d'affichage */
-        .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); 
-            display: none; /* CACHÉ PAR DÉFAUT */
-            align-items: center; justify-content: center; z-index: 2000; padding: 20px;
-            backdrop-filter: blur(4px);
-        }
-        .modal.active { display: flex; } /* S'affiche uniquement avec cette classe */
-
-        .modal-content { 
-            background: white; padding: 25px; border-radius: 20px; 
-            width: 100%; max-width: 450px; position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-        }
-
-        /* Formulaire */
-        .form-group { margin-bottom: 15px; }
-        input, select, textarea { 
-            width: 100%; padding: 12px; border: 1.5px solid var(--border); 
-            border-radius: 10px; font-family: inherit; font-size: 14px;
-        }
-        .btn { 
-            padding: 12px 20px; border-radius: 10px; border: none; 
-            font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%;
-        }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-outline { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
-        
-        .ad-card { 
-            background: white; border-radius: 15px; border: 1px solid var(--border); 
-            overflow: hidden; cursor: pointer; transition: 0.3s;
-        }
-        .ad-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .ad-card-img { height: 160px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-        .ad-card-info { padding: 15px; }
-
-        .wa-btn { background: #25D366; color: white; text-align: center; display: block; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: 800; margin-top: 15px; }
-        
-        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #94a3b8; }
-    </style>
 </head>
 <body>
 
-<nav>
-    <a href="#" class="logo">AD<span>PLANET</span></a>
-    <div id="user-menu">
-        <button class="btn btn-outline" style="width: auto;" onclick="toggleModal('auth-modal', true)">Se connecter</button>
-    </div>
-</nav>
-
-<main>
-    <section class="hero">
-        <h1>Vendez au <span>Sénégal</span></h1>
-        <p>Petites annonces gratuites. Contact via WhatsApp.</p>
-        <button class="btn btn-primary" style="max-width: 250px; margin-top: 20px;" onclick="checkAuthAndOpenPost()">+ Publier une annonce</button>
+    <section id="view-landing" class="view active">
+        <div class="hero">
+            <h1>ADPLANET <span>SN</span></h1>
+            <p>La première plateforme publicitaire 100% visuelle au Sénégal.</p>
+            <div class="features">
+                <div class="feat">📸 Photos HD</div>
+                <div class="feat">🎥 Vidéos démo</div>
+                <div class="feat">💬 WhatsApp direct</div>
+            </div>
+            <p class="scroll-msg">Défilez pour commencer ↓</p>
+        </div>
+        
+        <div class="landing-footer">
+            <h2>Prêt à vendre ou acheter ?</h2>
+            <button class="btn btn-primary" onclick="showView('view-auth')">Inscription / Connexion</button>
+        </div>
     </section>
 
-    <div id="ads-container" class="ads-grid">
-        <p style="text-align: center; grid-column: 1/-1;">Chargement des offres...</p>
-    </div>
-</main>
-
-<div id="auth-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="toggleModal('auth-modal', false)">×</span>
-        <h2 id="auth-title" style="margin-bottom: 20px;">Connexion</h2>
-        <input type="email" id="auth-email" placeholder="Votre email">
-        <input type="password" id="auth-pw" placeholder="Mot de passe">
-        <button class="btn btn-primary" onclick="handleAuth()">Continuer</button>
-        <p style="margin-top: 15px; text-align: center; font-size: 14px; color: var(--accent); cursor: pointer;" onclick="toggleAuthMode()">Pas encore de compte ? S'inscrire</p>
-    </div>
-</div>
-
-<div id="post-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="toggleModal('post-modal', false)">×</span>
-        <h2 style="margin-bottom: 20px;">Nouvelle Annonce</h2>
-        <input type="text" id="ad-title" placeholder="Que vendez-vous ?">
-        <select id="ad-cat">
-            <option value="Électronique">Électronique</option>
-            <option value="Véhicules">Véhicules</option>
-            <option value="Immobilier">Immobilier</option>
-            <option value="Mode">Mode & Beauté</option>
-        </select>
-        <textarea id="ad-desc" rows="3" placeholder="Description de l'article..."></textarea>
-        <input type="text" id="ad-price" placeholder="Prix (ex: 25 000)">
-        <div style="display: flex; gap: 5px;">
-            <span style="padding: 12px; background: #eee; border-radius: 8px;">+221</span>
-            <input type="tel" id="ad-phone" placeholder="77 000 00 00">
+    <section id="view-auth" class="view">
+        <div class="auth-box">
+            <button class="btn-back" onclick="showView('view-landing')">← Retour</button>
+            <h2 id="auth-title">Connexion</h2>
+            <input type="email" id="auth-email" placeholder="Email">
+            <input type="password" id="auth-pw" placeholder="Mot de passe">
+            <button class="btn btn-primary" id="btn-auth-submit">Continuer</button>
+            <p onclick="toggleAuthMode()" id="auth-toggle-text">Pas de compte ? S'inscrire</p>
         </div>
-        <input type="text" id="ad-city" placeholder="Ville (Dakar, Thies...)">
-        <button class="btn btn-primary" onclick="submitAd()">PUBLIER MAINTENANT</button>
+    </section>
+
+    <section id="view-home" class="view">
+        <nav class="main-nav">
+            <span class="logo">AD<span>PLANET</span></span>
+            <button class="btn-profile" onclick="showView('view-profile')">👤 Mon Profil</button>
+        </nav>
+        <div class="content">
+            <div id="feed" class="feed-grid">
+                <p class="empty-msg">Aucune publication pour le moment.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-profile" class="view">
+        <nav class="main-nav">
+            <button class="btn-back" onclick="showView('view-home')">← Retour Accueil</button>
+            <button class="btn-logout" onclick="handleLogout()">Déconnexion</button>
+        </nav>
+        <div class="content">
+            <div class="profile-header">
+                <h2 id="user-display">Mon Espace</h2>
+                <button class="btn btn-primary" onclick="openPublishModal()">+ Publier Photo/Vidéo</button>
+            </div>
+            <div id="my-ads" class="feed-grid">
+                </div>
+        </div>
+    </section>
+
+    <div id="modal-publish" class="modal">
+        <div class="modal-content">
+            <h3>Nouvelle Publication</h3>
+            <p class="hint">Sélectionnez une image ou une vidéo</p>
+            <input type="file" id="file-input" accept="image/*,video/*">
+            <input type="text" id="post-title" placeholder="Titre de l'objet">
+            <input type="text" id="post-price" placeholder="Prix (FCFA)">
+            <input type="tel" id="post-phone" placeholder="WhatsApp (77xxxxxxx)">
+            <div class="modal-btns">
+                <button class="btn" onclick="closePublishModal()">Annuler</button>
+                <button class="btn btn-primary" id="btn-upload">Publier</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<div id="detail-modal" class="modal">
-    <div class="modal-content" id="detail-content"></div>
-</div>
-
-<script>
-    const SB_URL = "https://hygkieeuiwgyvvqxyjmv.supabase.co";
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTIyNDAsImV4cCI6MjA5MzM4ODI0MH0.NNP6q_OmIVfXLt-lIPBNY1HiGdw5gLlI2ZbwdNCMP_Y";
-    const supabase = window.supabase.createClient(SB_URL, SB_KEY);
-
-    let currentUser = null;
-    let isSignUpMode = false;
-
-    // --- LOGIQUE INTERFACE ---
-    function toggleModal(id, show) {
-        const modal = document.getElementById(id);
-        if (show) modal.classList.add('active');
-        else modal.classList.remove('active');
-    }
-
-    function toggleAuthMode() {
-        isSignUpMode = !isSignUpMode;
-        document.getElementById('auth-title').innerText = isSignUpMode ? "Inscription" : "Connexion";
-    }
-
-    // --- AUTHENTIFICATION ---
-    async function checkAuth() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            currentUser = session.user;
-            document.getElementById('user-menu').innerHTML = `
-                <span style="font-weight: 600; margin-right: 10px;">👤 ${currentUser.email.split('@')[0]}</span>
-                <button class="btn btn-outline" style="width: auto; padding: 5px 10px;" onclick="logout()">Quitter</button>
-            `;
-        }
-    }
-
-    async function handleAuth() {
-        const email = document.getElementById('auth-email').value;
-        const password = document.getElementById('auth-pw').value;
-        const { data, error } = isSignUpMode 
-            ? await supabase.auth.signUp({ email, password })
-            : await supabase.auth.signInWithPassword({ email, password });
-
-        if (error) alert("Erreur: " + error.message);
-        else location.reload();
-    }
-
-    async function logout() {
-        await supabase.auth.signOut();
-        location.reload();
-    }
-
-    function checkAuthAndOpenPost() {
-        if (!currentUser) toggleModal('auth-modal', true);
-        else toggleModal('post-modal', true);
-    }
-
-    // --- ANNONCES ---
-    async function submitAd() {
-        const ad = {
-            user_id: currentUser.id,
-            title: document.getElementById('ad-title').value,
-            category: document.getElementById('ad-cat').value,
-            description: document.getElementById('ad-desc').value,
-            price: document.getElementById('ad-price').value,
-            contact: document.getElementById('ad-phone').value.replace(/\s/g, ''),
-            location: document.getElementById('ad-city').value,
-            active: true
-        };
-
-        const { error } = await supabase.from('ads').insert([ad]);
-        if (error) alert(error.message);
-        else {
-            alert("Annonce publiée !");
-            location.reload();
-        }
-    }
-
-    async function loadAds() {
-        const { data, error } = await supabase.from('ads').select('*').eq('active', true).order('created_at', { ascending: false });
-        const container = document.getElementById('ads-container');
-        container.innerHTML = '';
-
-        if (data) {
-            data.forEach(ad => {
-                const div = document.createElement('div');
-                div.className = 'ad-card';
-                div.onclick = () => showDetail(ad);
-                div.innerHTML = `
-                    <div class="ad-card-img">📦</div>
-                    <div class="ad-card-info">
-                        <h3 style="font-size: 1rem; margin-bottom: 5px;">${ad.title}</h3>
-                        <p style="color: var(--accent); font-weight: 800;">${ad.price} FCFA</p>
-                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">📍 ${ad.location}</p>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-    }
-
-    function showDetail(ad) {
-        const waLink = `https://wa.me/221${ad.contact}?text=Bonjour, je vous contacte pour : ${encodeURIComponent(ad.title)}`;
-        document.getElementById('detail-content').innerHTML = `
-            <span class="close-btn" onclick="toggleModal('detail-modal', false)">×</span>
-            <h2 style="font-family: 'Orbitron'; margin-bottom: 10px;">${ad.title}</h2>
-            <p style="font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: 15px;">${ad.price} FCFA</p>
-            <p style="color: #475569; line-height: 1.5;">${ad.description}</p>
-            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-            <p><strong>Catégorie :</strong> ${ad.category}</p>
-            <p><strong>Ville :</strong> ${ad.location}</p>
-            <a href="${waLink}" target="_blank" class="wa-btn">CONTACTER SUR WHATSAPP</a>
-        `;
-        toggleModal('detail-modal', true);
-    }
-
-    // Lancement
-    window.onload = () => {
-        checkAuth();
-        loadAds();
-    }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
-
