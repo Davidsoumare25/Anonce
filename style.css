@@ -1,0 +1,41 @@
+:root {
+    --accent: #0055ff;
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --text: #f8fafc;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+/* Gestion des vues */
+.view { display: none; min-height: 100vh; width: 100%; }
+.view.active { display: block; }
+
+/* Landing Page */
+.hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+.hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+.hero span { color: var(--accent); }
+.scroll-msg { margin-top: 50px; animation: bounce 2s infinite; opacity: 0.7; }
+
+.landing-footer { height: 30vh; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* Formulaires */
+.auth-box { max-width: 400px; margin: 100px auto; padding: 30px; background: var(--surface); border-radius: 20px; }
+input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #334155; color: white; }
+
+/* Boutons */
+.btn { padding: 12px 25px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { transform: scale(1.05); }
+
+/* Navigation */
+.main-nav { height: 70px; background: var(--surface); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: sticky; top: 0; }
+
+/* Modals */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
+.modal.active { display: flex; }
+.modal-content { background: var(--surface); padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; }
+
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+
