@@ -3,55 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADPLANET SN</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ADPLANET SN — Publicité</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --accent: #0055ff; --bg: #0f172a; --surface: #1e293b; --text: #f8fafc; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        
+        /* Navigation entre les sections */
+        .view { display: none; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; }
+        .view.active { display: block; position: relative; }
+
+        /* Style Landing */
+        .hero { height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .hero span { color: var(--accent); }
+        .footer-landing { height: 20vh; display: flex; justify-content: center; align-items: center; background: var(--surface); }
+
+        /* Style Box Auth */
+        .auth-box { max-width: 350px; margin: 80px auto; padding: 30px; background: var(--surface); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #334155; color: white; box-sizing: border-box; }
+        
+        /* Style Boutons */
+        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:active { transform: scale(0.95); }
+
+        /* Navigation App */
+        nav { height: 65px; background: var(--surface); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #334155; }
+        .content { padding: 20px; }
+    </style>
 </head>
 <body>
-
-    <button onclick="alert('Le JavaScript fonctionne !')" style="position:fixed; top:10px; right:10px; z-index:9999; padding:5px; opacity:0.3;">Test JS</button>
 
     <section id="view-landing" class="view active">
         <div class="hero">
             <h1>ADPLANET <span>SN</span></h1>
-            <p>Défilez pour découvrir la plateforme</p>
-            <div style="height: 100vh;"></div> <button class="btn btn-primary" onclick="showView('view-auth')">Commencer</button>
+            <p>Défilez vers le bas pour commencer...</p>
+            <div style="height: 60vh;"></div>
+        </div>
+        <div class="footer-landing">
+            <button class="btn btn-primary" style="width: auto;" onclick="navTo('view-auth')">S'inscrire / Se Connecter</button>
         </div>
     </section>
 
     <section id="view-auth" class="view">
         <div class="auth-box">
             <h2 id="auth-title">Connexion</h2>
-            <input type="email" id="auth-email" placeholder="Email">
-            <input type="password" id="auth-pw" placeholder="Mot de passe">
-            <button class="btn btn-primary" id="btn-auth-submit">Valider</button>
-            <p onclick="toggleAuthMode()" id="auth-toggle-text" style="cursor:pointer; color:blue; margin-top:10px;">S'inscrire</p>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="pw" placeholder="Mot de passe">
+            <button class="btn btn-primary" id="btn-auth">Valider</button>
+            <p id="toggle-auth" style="text-align: center; margin-top: 15px; cursor: pointer; font-size: 14px; color: var(--accent);">Créer un compte</p>
+            <button class="btn" style="background: transparent; color: gray; margin-top: 10px;" onclick="navTo('view-landing')">Retour</button>
         </div>
     </section>
 
     <section id="view-home" class="view">
-        <nav class="main-nav">
-            <span>ADPLANET</span>
-            <button onclick="showView('view-profile')">👤 Profil</button>
+        <nav>
+            <span style="font-weight: bold;">ADPLANET SN</span>
+            <button class="btn btn-primary" style="width: auto; padding: 5px 15px;" onclick="navTo('view-profile')">👤 Profil</button>
         </nav>
         <div class="content">
-            <h2>Fil d'actualité</h2>
-            <div id="feed"></div>
+            <h3>Toutes les publications</h3>
+            <div id="feed">Chargement des photos et vidéos...</div>
         </div>
     </section>
 
     <section id="view-profile" class="view">
-        <nav class="main-nav">
-            <button onclick="showView('view-home')">← Retour</button>
-            <button onclick="handleLogout()">Quitter</button>
+        <nav>
+            <button class="btn" style="width: auto; background: transparent; color: white;" onclick="navTo('view-home')">← Accueil</button>
+            <button class="btn" style="width: auto; background: #ef4444; color: white; padding: 5px 15px;" onclick="logout()">Déconnexion</button>
         </nav>
         <div class="content">
-            <h2>Mon Espace</h2>
-            <button class="btn btn-primary" onclick="openPublishModal()">+ Publier</button>
-            <div id="my-ads"></div>
+            <h2>Mon Espace Publicitaire</h2>
+            <button class="btn btn-primary" onclick="alert('Module de chargement Photo/Vidéo en cours...')">+ Publier un Média</button>
+            <div id="user-ads" style="margin-top: 20px;">Vous n'avez pas encore de publications.</div>
         </div>
     </section>
 
-    <script src="script.js"></script>
+    <script>
+        // --- CONFIGURATION ---
+        const SB_URL = "https://hygkieeuiwgyvvqxyjmv.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6Imh5Z2tpZWV1aXdneXZ2cXh5am12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTIyNDAsImV4cCI6MjA5MzM4ODI0MH0.NNP6q_OmIVfXLt-lIPBNY1HiGdw5gLlI2ZbwdNCMP_Y";
+        
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SB_URL, SB_KEY);
+        } catch (e) {
+            alert("Erreur de chargement Supabase. Vérifiez votre connexion.");
+        }
+
+        // --- NAVIGATION ---
+        window.navTo = function(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const target = document.getElementById(id);
+            if(target) {
+                target.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // --- GESTION AUTH ---
+        const authBtn = document.getElementById('btn-auth');
+        const authToggle = document.getElementById('toggle-auth');
+        const authTitle = document.getElementById('auth-title');
+
+        authToggle.onclick = () => {
+            if(authTitle.innerText === "Connexion") {
+                authTitle.innerText = "Inscription";
+                authToggle.innerText = "Déjà un compte ? Se connecter";
+            } else {
+                authTitle.innerText = "Connexion";
+                authToggle.innerText = "Créer un compte";
+            }
+        }
+
+        authBtn.onclick = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pw').value;
+            const isSignUp = authTitle.innerText === "Inscription";
+
+            if(!email || !password) return alert("Remplissez tout !");
+
+            const { data, error } = isSignUp 
+                ? await supabase.auth.signUp({ email, password })
+                : await supabase.auth.signInWithPassword({ email, password });
+
+            if(error) alert(error.message);
+            else {
+                if(isSignUp) alert("Succès ! Vérifiez vos emails pour confirmer.");
+                else location.reload();
+            }
+        }
+
+        window.logout = async () => {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        // --- DEMARRAGE ---
+        window.onload = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if(session) navTo('view-home');
+        }
+    </script>
 </body>
 </html>
